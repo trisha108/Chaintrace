@@ -24,32 +24,37 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(ROOT_DIR, "data")
 KNOWN_BAD_CSV = os.path.join(ROOT_DIR, "known_bad_addresses.csv")
 
+import threading
+
 @app.on_event("startup")
 def startup_event():
-    # Load dataset
+    thread = threading.Thread(
+        target=load_data_background, 
+        daemon=True
+    )
+    thread.start()
+
+def load_data_background():
     tx_full, sanctioned, load_msgs = data_loader.load_all_datasets(
         DATA_DIR,
         demo_mode=True,
         known_bad_path=KNOWN_BAD_CSV
     )
-    
-    # Build graph
     G = graph_builder.build_wallet_graph(tx_full)
-    
-    # Run detection
     flagged = pattern_detector.run_detection(G, sanctioned)
-    
-    # Cluster networks
-    nets = pattern_detector.cluster_networks(G, flagged, data_dir=DATA_DIR)
-    
+    nets = pattern_detector.cluster_networks(
+        G, flagged, data_dir=DATA_DIR)
     GLOBAL_STATE['tx_full'] = tx_full
     GLOBAL_STATE['sanctioned'] = sanctioned
     GLOBAL_STATE['G'] = G
     GLOBAL_STATE['flagged'] = flagged
     GLOBAL_STATE['nets'] = nets
+    GLOBAL_STATE['ready'] = True
 
 @app.get("/api/stats")
 def get_stats():
+    if not GLOBAL_STATE.get('ready'):
+    return {"status": "loading", "message": "Data still loading, try again in 30 seconds"}
     tx_full = GLOBAL_STATE['tx_full']
     flagged = GLOBAL_STATE['flagged']
     nets = GLOBAL_STATE['nets']
@@ -74,6 +79,8 @@ def get_networks(
     risk: str = Query("all"),
     mode: str = Query("demo")
 ):
+if not GLOBAL_STATE.get('ready'):
+    return {"status": "loading", "message": "Data still loading, try again in 30 seconds"}
     nets = GLOBAL_STATE['nets']
     
     risk_f = risk.lower() if risk.lower() != "all" else None
@@ -108,6 +115,8 @@ def get_networks(
 
 @app.get("/api/network/{net_id}")
 def get_network_detail(net_id: int):
+    if not GLOBAL_STATE.get('ready'):
+    return {"status": "loading", "message": "Data still loading, try again in 30 seconds"}
     nets = GLOBAL_STATE['nets']
     G = GLOBAL_STATE['G']
     
@@ -160,6 +169,8 @@ def get_network_detail(net_id: int):
 
 @app.get("/api/globe-points")
 def get_globe_points():
+    if not GLOBAL_STATE.get('ready'):
+    return {"status": "loading", "message": "Data still loading, try again in 30 seconds"}
     flagged = GLOBAL_STATE['flagged']
     nets = GLOBAL_STATE['nets']
     
@@ -200,6 +211,9 @@ def get_globe_points():
 
 @app.get("/api/globe-edges/{net_id}")
 def get_globe_edges(net_id: int):
+    if not GLOBAL_STATE.get('ready'):
+    # pyrefly: ignore [parse-error]
+    return {"status": "loading", "message": "Data still loading, try again in 30 seconds"}
     nets = GLOBAL_STATE['nets']
     if net_id not in nets:
         raise HTTPException(status_code=404, detail="Network not found")
@@ -227,6 +241,9 @@ def get_globe_edges(net_id: int):
 
 @app.get("/api/threat-intel")
 def get_threat_intel():
+    if not GLOBAL_STATE.get('ready'):
+    # pyrefly: ignore [parse-error]
+    return {"status": "loading", "message": "Data still loading, try again in 30 seconds"}
     items = rss_monitor.fetch_feed_items(5, timeout=5)
     results = []
     for it in items:
