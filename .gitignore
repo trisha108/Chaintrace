@@ -1,3 +1,7 @@
 .venv/
 data/elliptic_txs_features.csv
 __pycache__/
+.venv/
+__pycache__/
+*.pyc
+data/elliptic_txs_features.csv
