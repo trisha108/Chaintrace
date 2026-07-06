@@ -134,9 +134,9 @@ def load_elliptic_unified(
     """
     msgs: List[str] = []
     base = os.path.abspath(data_dir)
-    fp = os.path.join(base, "elliptic_txs_features.csv")
-    ep = os.path.join(base, "elliptic_txs_edgelist.csv")
-    cp = os.path.join(base, "elliptic_txs_classes.csv")
+    fp = os.path.join(base, "elliptic_sample_features.csv")
+    ep = os.path.join(base, "elliptic_sample_edgelist.csv")
+    cp = os.path.join(base, "elliptic_sample_classes.csv")
     if not all(os.path.isfile(p) for p in (fp, ep, cp)):
         msgs.append("Elliptic CSV trio not found; skipping Elliptic.")
         return _empty_unified(), msgs
@@ -294,7 +294,7 @@ def load_all_datasets(
     if not demo_mode:
         elliptic_rows = elliptic_max_rows  # None = full file
 
-    elliptic_fp = os.path.join(os.path.abspath(data_dir), "elliptic_txs_features.csv")
+    elliptic_fp = os.path.join(os.path.abspath(data_dir), "elliptic_sample_features.csv")
     if demo_mode and not os.path.isfile(elliptic_fp):
         parts.append(build_builtin_demo_transactions())
         all_msgs.append("Demo mode: using built-in synthetic Bitcoin demo (no CSV).")
