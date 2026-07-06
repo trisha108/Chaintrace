@@ -1,0 +1,11 @@
+╭─── Claude Code v2.1.112 ─────────────────────────────────────────────────────╮
+│                                                    │ Tips for getting        │
+│                Welcome back Trisha!                │ started                 │
+│                                                    │ Run /init to create a … │
+│                      ▗ ▗   ▖ ▖                     │ ─────────────────────── │
+│                                                    │ Recent activity         │
+│                        ▘▘ ▝▝                       │ No recent activity      │
+│     Sonnet 4.6 · Claude Pro ·                      │                         │
+│     trishashishodiya10@gmail.com's Organization    │                         │
+│        ~/Documents/UTD/FinHack/FIU_Detection       │                         │
+╰──────────────────────────────────────────────────────────────────────────────╯

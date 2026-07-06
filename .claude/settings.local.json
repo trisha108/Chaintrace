@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pkill -f \"streamlit run dashboard.py\")",
+      "Bash(.venv/bin/streamlit run *)",
+      "Bash(curl -s http://localhost:8501)"
+    ]
+  }
+}
