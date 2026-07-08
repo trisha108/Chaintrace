@@ -65,8 +65,9 @@ def health():
 def get_stats():
     get_state()
     if not GLOBAL_STATE.get('ready'):
-        return {"status": "loading",
-                "message": "Data still loading, try again in 30 seconds"}
+        return {"transactions": 0, "flagged": 0,
+                "networks": 0, "value": 0,
+                "status": "loading"}
     tx_full = GLOBAL_STATE['tx_full']
     flagged = GLOBAL_STATE['flagged']
     nets = GLOBAL_STATE['nets']
@@ -76,12 +77,10 @@ def get_stats():
         for w in flagged
         if w in G.nodes
     )
-    return {
-        "transactions": len(tx_full),
-        "flagged": len(flagged),
-        "networks": len(nets),
-        "value": value
-    }
+    return {"transactions": len(tx_full),
+            "flagged": len(flagged),
+            "networks": len(nets),
+            "value": value}
 
 
 @app.get("/api/networks")
