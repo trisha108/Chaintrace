@@ -9,4 +9,4 @@ RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 EXPOSE 10000
-CMD sh -c "uvicorn api:app --host 0.0.0.0 --port ${PORT:-10000}"
+CMD sh -c "python3 -c 'import data_loader, graph_builder, pattern_detector; print(\"preloading\")' && uvicorn api:app --host 0.0.0.0 --port ${PORT:-10000}"
